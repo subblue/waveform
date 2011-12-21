@@ -145,8 +145,13 @@ class Waveform
       else
         color = ChunkyPNG::Color.from_hex(options[:color])
       end
-
-      image = ChunkyPNG::Image.new(options[:width], options[:height], background_color)
+      
+      if options[:rotate]
+        # Using image.rotate_right! after image generation is far too slow, so doing it this way!
+        image = ChunkyPNG::Image.new(options[:height], options[:width], background_color)
+      else
+        image = ChunkyPNG::Image.new(options[:width], options[:height], background_color)
+      end
       # Calling "zero" the middle of the waveform, like there's positive and
       # negative amplitude
       zero = options[:height] / 2.0
@@ -156,7 +161,11 @@ class Waveform
         amplitude = sample * options[:height].to_f / 2.0
         # If you give ChunkyPNG floats for pixel positions all sorts of things
         # go haywire.
-        image.line(x, (zero - amplitude).round, x, (zero + amplitude).round, color)
+        if options[:rotate]
+          image.line((zero - amplitude).round, x, (zero + amplitude).round, x, color)
+        else  
+          image.line(x, (zero - amplitude).round, x, (zero + amplitude).round, color)
+        end
       end
       
       # Simple transparency masking, it just loops over every pixel and makes

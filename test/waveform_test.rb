@@ -76,6 +76,14 @@ class WaveformTest < Test::Unit::TestCase
       assert_equal 100, image.height
     end
     
+    should "generate a rotated waveform 900px tall" do
+      @waveform.generate(output("height-rotated.png"), :width => 900, :height => 100, :rotate => true)
+      image = open_png(output("height-rotated.png"))
+      
+      assert_equal 100, image.width
+      assert_equal 900, image.height
+    end
+    
     should "generate waveform on red background color" do
       @waveform.generate(output("background_color-#ff0000.png"), :background_color => "#ff0000")
       image = open_png(output("background_color-#ff0000.png"))
